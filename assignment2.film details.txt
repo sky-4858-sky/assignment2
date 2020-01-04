@@ -1,0 +1,146 @@
+package com.Deloitte.assignment2;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
+
+public class MovieTime{
+	private static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));
+	private static final MovieRepoImpl movielist = new MovieRepoImpl();
+
+	public static void main(String[] args) {
+		run();
+	}
+
+	private static void run() {
+		boolean run = true;
+		String cmd;
+		menu();
+		do {
+			cmd = read("");
+			if (cmd.equalsIgnoreCase("ADD")) {
+				add();
+			} else if (cmd.equalsIgnoreCase("DEL")) {
+				del();
+			} else if (cmd.equalsIgnoreCase("GET")) {
+				get();
+			} else if (cmd.equalsIgnoreCase("GAM")) {
+				gam();
+			} else if (cmd.equalsIgnoreCase("HELP")) {
+				help();
+			} else if (cmd.equalsIgnoreCase("EXIT")) {
+				run = false;
+			} else {
+				System.out.println("Wrong Command");
+			}
+		} while (run);
+	}
+
+	public static Movie createMovie() {
+		boolean create;
+		long id = 0;
+		try {
+			id = Long.parseLong(read("Movie ID: "));
+			create = true;
+		} catch (Exception e) {
+			create = false;
+			System.out.println("MovieID can only be a Integer");
+		}
+		String name = read("Movie Name: ");
+		String showDate = read("Movie Show Date: ");
+		String showTime = read("Movie Show Time: ");
+		boolean availability = read("Availability(Available/Not Available): ").equalsIgnoreCase("Available");
+		if (create) {
+			return new Movie(id, name, showDate, showTime, availability);
+		} else {
+			return null;
+		}
+	}
+
+	private static void gam() {
+		List<Movie> l = movielist.getAllMovies();
+		Iterator<Movie> mi = l.iterator();
+		while (mi.hasNext()) {
+			System.out.println(mi.next());
+		}
+	}
+
+	private static void get() {
+		boolean idOk;
+		long id = 0;
+		Movie m = null;
+		try {
+			id = Long.parseLong(read("Enter Movie ID: "));
+			idOk = true;
+		} catch (Exception e) {
+			idOk = false;
+		}
+		if (idOk) {
+			m = movielist.getMovieById(id);
+			if (m != null) {
+				System.out.println(m);
+			} else {
+				System.out.println("Cannot fetch any movies");
+			}
+		} else {
+			System.out.println("MovieID can only be a Integer");
+		}
+	}
+
+	private static void del() {
+		Movie m = createMovie();
+		if (m != null) {
+			boolean del = movielist.deleteMovie(m);
+			if (del) {
+				System.out.println("Movie Deleted");
+			} else {
+				System.out.println("Movie could not be deleted");
+			}
+		} else {
+			System.out.println("No Movies found to be Deleted");
+		}
+	}
+
+	private static void add() {
+		Movie m = createMovie();
+		if (m != null) {
+			boolean add = movielist.addMovie(m);
+			if (add) {
+				System.out.println("Movie Added: " + m);
+			} else {
+				System.out.println("Movie Updated: " + m);
+			}
+		} else {
+			System.out.println("Movie could not be Added");
+		}
+	}
+
+	private static void menu() {
+		System.out.println("<<MENU>>");
+		System.out.println("Enter any command from the list:");
+		help();
+	}
+
+	private static void help() {
+		System.out.println("HELP - To Get HELP");
+		System.out.println("ADD - To Add a new Movie");
+		System.out.println("DEL - To Delete a Movie");
+		System.out.println("GET - To get Movie Details by MovieID");
+		System.out.println("GAM - To get All Movies Details");
+		System.out.println("EXIT - To exit the Program");
+	}
+
+	private static String read(String message) {
+		System.out.print(message);
+		try {
+			return BR.readLine();
+		} catch (IOException ioe) {
+			return "";
+		}
+	}
+}

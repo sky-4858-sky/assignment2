@@ -1,0 +1,135 @@
+package com.Deloitte.assignment2;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.*;
+
+
+import javax.swing.text.html.HTMLDocument.Iterator;
+
+public class Movie {
+	private long id;
+	private String name, showDate, showTime;
+	private boolean availability;
+
+	public Movie(long id, String name, String showDate, String showTime, boolean availability) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.showDate = showDate;
+		this.showTime = showTime;
+		this.availability = availability;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getShowDate() {
+		return showDate;
+	}
+
+	public void setShowDate(String showDate) {
+		this.showDate = showDate;
+	}
+
+	public String getShowTime() {
+		return showTime;
+	}
+
+	public void setShowTime(String showTime) {
+		this.showTime = showTime;
+	}
+
+	public boolean getAvailability() {
+		return availability; 
+	}
+
+	public void setAvailability(boolean availability) {
+		this.availability = availability;
+	}
+
+	@Override
+	public String toString() {
+		return id + "    " + name + "    " + showDate + "    " + showTime + "    " + availability;
+	}
+
+}
+
+
+
+
+
+
+
+interface MovieRepo {
+
+	boolean addMovie(Movie movie);
+
+	boolean deleteMovie(Movie movie);
+
+	Movie getMovieById(long movieId);
+
+	List<Movie> getAllMovies();
+}
+
+class MovieRepoImpl implements MovieRepo {
+
+	List<Movie> movies = new ArrayList<Movie>();
+	@Override
+	public boolean addMovie(Movie movie) {
+		Movie obj = getMovieById(movie.getId());
+		if(obj==null) {
+			movies.add(movie);
+			return true;
+		} else {
+			obj.setName(movie.getName());
+			obj.setShowDate(movie.getShowDate());
+			obj.setShowTime(movie.getShowTime());
+			obj.setAvailability(movie.getAvailability());
+			System.out.println("Movie Updated");
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteMovie(Movie movie) {
+		Movie obj = getMovieById(movie.getId());
+		if(obj!=null) {
+			movies.remove(obj);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public Movie getMovieById(long movieId) {
+		Movie out = null;
+		Iterator<Movie> mi = movies.iterator();    
+		boolean found = false;
+		while (!found && mi.hasNext()) {
+			out = mi.next();
+			found = out.getId() == movieId;
+		}
+		return found ? out : null;
+	}
+
+	@Override
+	public List<Movie> getAllMovies() {
+		return movies;
+	}
+
+}
